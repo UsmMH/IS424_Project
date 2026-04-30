@@ -1,5 +1,5 @@
 """
-Reset & reseed — run with:  Get-Content seed_data.py | python manage.py shell
+Reset & reseed — run with:  Get-Content seed_data.py | python manage.py shell 
 """
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gym_core.settings')
