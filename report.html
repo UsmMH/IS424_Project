@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IS424 Project Report — FitSync Gym Class Booking System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Print & screen shared ─────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 11pt;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #f0f0f0;
+    }
+
+    .page {
+      background: #ffffff;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      padding: 25mm 22mm 20mm;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+      position: relative;
+    }
+
+    /* ─── Cover page ───────────────────────────────────── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 257mm;
+    }
+
+    .cover .university-logo {
+      width: 80px; height: 80px;
+      background: #f97316;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; color: #fff; font-weight: 900;
+      margin: 0 auto 1.5rem;
+    }
+
+    .cover .university-name {
+      font-size: 13pt; font-weight: 600; color: #374151;
+      margin-bottom: 0.25rem;
+    }
+    .cover .department {
+      font-size: 11pt; color: #6b7280; margin-bottom: 3rem;
+    }
+
+    .cover-divider {
+      width: 60px; height: 4px;
+      background: #f97316;
+      border-radius: 2px;
+      margin: 0 auto 3rem;
+    }
+
+    .cover .project-label {
+      font-size: 10pt; font-weight: 600; color: #f97316;
+      text-transform: uppercase; letter-spacing: 0.15em;
+      margin-bottom: 1rem;
+    }
+    .cover h1 {
+      font-size: 26pt; font-weight: 800; color: #111827;
+      line-height: 1.2; margin-bottom: 0.5rem;
+    }
+    .cover .subtitle {
+      font-size: 13pt; color: #6b7280; margin-bottom: 3.5rem;
+    }
+
+    .cover .meta-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 3rem;
+    }
+    .cover .meta-table td {
+      padding: 0.5rem 1rem; font-size: 10.5pt;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .cover .meta-table td:first-child {
+      font-weight: 600; color: #6b7280; text-align: right;
+      width: 45%; padding-right: 1.5rem;
+    }
+    .cover .meta-table td:last-child {
+      color: #111827; text-align: left;
+    }
+
+    .cover .members-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      padding: 1.25rem 2rem;
+      width: 100%;
+    }
+    .cover .members-box h3 {
+      font-size: 10pt; font-weight: 700; color: #f97316;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+    .member-row {
+      display: flex; justify-content: space-between;
+      font-size: 10.5pt; padding: 0.3rem 0;
+      border-bottom: 1px dashed #fed7aa;
+      color: #374151;
+    }
+    .member-row:last-child { border-bottom: none; }
+    .member-row .sid { color: #9ca3af; font-size: 10pt; }
+
+    /* ─── Content pages ────────────────────────────────── */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid #f97316;
+      padding-bottom: 0.6rem; margin-bottom: 2rem;
+    }
+    .page-header .brand {
+      font-size: 10pt; font-weight: 700; color: #f97316;
+    }
+    .page-header .section-num {
+      font-size: 9pt; color: #9ca3af;
+    }
+
+    h2 {
+      font-size: 17pt; font-weight: 800; color: #111827;
+      margin-bottom: 0.4rem;
+    }
+    .section-tag {
+      display: inline-block;
+      background: #fff7ed; color: #ea580c;
+      font-size: 9pt; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      padding: 2px 10px; border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-size: 12pt; font-weight: 700; color: #374151;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    p { margin-bottom: 0.9rem; color: #374151; }
+
+    ul, ol {
+      margin: 0.5rem 0 0.9rem 1.5rem; color: #374151;
+    }
+    li { margin-bottom: 0.3rem; }
+
+    /* Highlight box */
+    .highlight-box {
+      background: #fff7ed;
+      border-left: 4px solid #f97316;
+      border-radius: 0 8px 8px 0;
+      padding: 0.9rem 1.2rem;
+      margin: 1.2rem 0;
+      font-size: 10.5pt;
+    }
+    .highlight-box strong { color: #ea580c; }
+
+    /* Two column */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1rem 0; }
+
+    /* Req table */
+    .req-table { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 1rem 0; }
+    .req-table th {
+      background: #f97316; color: #fff; font-weight: 600;
+      padding: 0.5rem 0.75rem; text-align: left;
+    }
+    .req-table td {
+      padding: 0.5rem 0.75rem; border-bottom: 1px solid #f3f4f6;
+      vertical-align: top;
+    }
+    .req-table tr:nth-child(even) td { background: #fff7ed; }
+    .req-table .check { color: #16a34a; font-weight: 700; }
+
+    /* Tech stack */
+    .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin: 1rem 0; }
+    .tech-item {
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 8px; padding: 0.6rem 0.8rem;
+      font-size: 10pt;
+    }
+    .tech-item strong { display: block; color: #111827; font-size: 10.5pt; }
+    .tech-item span { color: #6b7280; font-size: 9.5pt; }
+
+    /* Page footer */
+    .page-footer {
+      position: absolute; bottom: 15mm; left: 22mm; right: 22mm;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 8.5pt; color: #9ca3af;
+      border-top: 1px solid #f3f4f6; padding-top: 0.5rem;
+    }
+
+    /* ─── Print rules ──────────────────────────────────── */
+    @media print {
+      body { background: #fff; }
+      .page {
+        box-shadow: none; margin: 0;
+        width: 100%; padding: 18mm 18mm 15mm;
+        page-break-after: always;
+      }
+      .page:last-child { page-break-after: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 1 — COVER
+══════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="university-logo">KSU</div>
+    <div class="university-name">King Saud University</div>
+    <div class="department">College of Computer and Information Sciences &nbsp;·&nbsp; Information Systems Department</div>
+
+    <div class="cover-divider"></div>
+
+    <div class="project-label">IS424 — Web Application Development</div>
+    <h1>FitSync</h1>
+    <div class="subtitle">Gym Class Booking &amp; Management System</div>
+
+    <table class="meta-table">
+      <tr>
+        <td>Course</td>
+        <td>IS424 — Web Application Development</td>
+      </tr>
+      <tr>
+        <td>Semester</td>
+        <td>2nd Semester 2025–26 (472 Hijri)</td>
+      </tr>
+      <tr>
+        <td>Due Date</td>
+        <td>21 May 2026</td>
+      </tr>
+      <tr>
+        <td>Total Marks</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td>Section</td>
+        <td><!-- ADD YOUR SECTION NUMBER --></td>
+      </tr>
+    </table>
+
+    <div class="members-box">
+      <h3>Group Members</h3>
+      <!-- ✏️ FILL IN YOUR GROUP MEMBERS BELOW -->
+      <div class="member-row">
+        <span>1. <!-- Full Name --></span>
+        <span class="sid"><!-- Student ID --></span>
+      </div>
+      <div class="member-row">
+        <span>2. <!-- Full Name --></span>
+        <span class="sid"><!-- Student ID --></span>
+      </div>
+      <div class="member-row">
+        <span>3. <!-- Full Name --></span>
+        <span class="sid"><!-- Student ID --></span>
+      </div>
+      <div class="member-row">
+        <span>4. <!-- Full Name --></span>
+        <span class="sid"><!-- Student ID --></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 2 — INTRODUCTION
+══════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">⚡ FitSync — Project Report</span>
+    <span class="section-num">Section 1 — Introduction</span>
+  </div>
+
+  <div class="section-tag">1 &nbsp;·&nbsp; Introduction</div>
+  <h2>Introduction</h2>
+
+  <p>
+    The digital transformation of fitness and wellness services has accelerated in recent years, with gyms and health clubs increasingly relying on web-based platforms to manage their operations and provide a seamless experience for their members. Scheduling, booking, and class management, once handled through manual registers or phone calls, are now expected to be available at the click of a button.
+  </p>
+
+  <p>
+    <strong>FitSync</strong> is a full-featured web application developed as part of the IS424 Web Application Development course at King Saud University. The system was built using the <strong>Django</strong> framework (Python) and follows the <strong>CRUD</strong> (Create, Read, Update, Delete) paradigm, enabling gym administrators and members to interact with a shared database of scheduled gym classes.
+  </p>
+
+  <div class="highlight-box">
+    <strong>Application Theme:</strong> FitSync is a male-only gym class booking platform. Members can browse the full schedule of classes, view detailed information about each session, and reserve their spot. Administrators have additional privileges to add new classes and update existing ones.
+  </div>
+
+  <h3>Project Objectives</h3>
+  <ul>
+    <li>Implement a complete Django web application with user authentication (registration and login).</li>
+    <li>Provide a structured interface for viewing, booking, adding, and updating gym classes.</li>
+    <li>Enforce role-based access control, distinguishing between regular members and staff administrators.</li>
+    <li>Apply Bootstrap 5 for a responsive and visually consistent user interface across all pages.</li>
+    <li>Demonstrate the many-to-many relationship between users and gym classes through a booking system.</li>
+  </ul>
+
+  <h3>Scope</h3>
+  <p>
+    The application covers the core requirements of a gym class scheduling system: user registration and login, browsing a class schedule, viewing detailed class information, booking a class, cancelling a booking, adding new classes (admin only), and editing existing classes (admin only). The system stores all data persistently in an SQLite database and runs as a local Django development server.
+  </p>
+
+  <div class="page-footer">
+    <span>FitSync — IS424 Project Report</span>
+    <span>King Saud University · 2026</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 3 — PROBLEM & OPPORTUNITY
+══════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">⚡ FitSync — Project Report</span>
+    <span class="section-num">Section 2 — Problem &amp; Opportunity</span>
+  </div>
+
+  <div class="section-tag">2 &nbsp;·&nbsp; Issue / Problem / Opportunity</div>
+  <h2>Issue, Problem &amp; Opportunity</h2>
+
+  <h3>The Problem</h3>
+  <p>
+    Traditional gym management relies heavily on manual processes: paper sign-up sheets, phone bookings, and spreadsheet rosters. This approach introduces several well-documented pain points:
+  </p>
+
+  <ul>
+    <li><strong>Overbooking and class conflicts:</strong> Without a centralised system, it is easy for a class to exceed its capacity, leading to overcrowded sessions and poor member experience.</li>
+    <li><strong>Lack of real-time visibility:</strong> Members have no way to check available spots before arriving at the gym, wasting time and causing frustration.</li>
+    <li><strong>Administrative overhead:</strong> Staff must manually update schedules, manage cancellations, and notify members, consuming significant time and effort.</li>
+    <li><strong>No booking history:</strong> Members cannot track which classes they have attended or currently have reserved.</li>
+    <li><strong>Scalability issues:</strong> As a gym grows, manual systems become unmanageable, limiting the organisation's ability to expand its class offerings.</li>
+  </ul>
+
+  <h3>The Opportunity</h3>
+  <p>
+    A web-based class booking system directly addresses these problems by centralising all data and automating key workflows. The shift from manual to digital management offers the following opportunities:
+  </p>
+
+  <div class="two-col">
+    <div>
+      <div class="highlight-box" style="height:100%;">
+        <strong>For Members</strong><br /><br />
+        Real-time class schedule access, instant booking confirmation, capacity tracking, and a personal bookings dashboard — all from any device with a browser.
+      </div>
+    </div>
+    <div>
+      <div class="highlight-box" style="height:100%;">
+        <strong>For Administrators</strong><br /><br />
+        Centralised class management, the ability to add or update sessions at any time, automatic enforcement of capacity limits, and a clear view of member engagement.
+      </div>
+    </div>
+  </div>
+
+  <h3>Why a Django Web Application?</h3>
+  <p>
+    Django is a mature, batteries-included Python web framework that provides built-in solutions for the most common web development challenges — including user authentication, form handling, ORM-based database access, and templating. Its opinionated structure encourages clean, maintainable code and rapid development, making it an ideal choice for a four-week academic project that must deliver a fully functional CRUD application.
+  </p>
+
+  <div class="page-footer">
+    <span>FitSync — IS424 Project Report</span>
+    <span>King Saud University · 2026</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 4 — SOLUTION STRUCTURE
+══════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">⚡ FitSync — Project Report</span>
+    <span class="section-num">Section 3 — Solution Structure</span>
+  </div>
+
+  <div class="section-tag">3 &nbsp;·&nbsp; Solution Structure</div>
+  <h2>Solution Structure</h2>
+
+  <h3>Technology Stack</h3>
+  <div class="tech-grid">
+    <div class="tech-item"><strong>Django 5</strong><span>Web framework (Python)</span></div>
+    <div class="tech-item"><strong>SQLite</strong><span>Relational database</span></div>
+    <div class="tech-item"><strong>Bootstrap 5</strong><span>CSS framework (CDN)</span></div>
+    <div class="tech-item"><strong>Bootstrap Icons</strong><span>Icon library</span></div>
+    <div class="tech-item"><strong>Google Fonts</strong><span>Inter typeface</span></div>
+    <div class="tech-item"><strong>Django ORM</strong><span>Database abstraction</span></div>
+  </div>
+
+  <h3>Data Models</h3>
+  <p>
+    The application uses two core models stored in SQLite via Django's ORM:
+  </p>
+  <ul>
+    <li><strong>GymClass</strong> — stores all class details: name, description, instructor, category (yoga, HIIT, strength, etc.), schedule (datetime), duration, capacity, location, and difficulty level.</li>
+    <li><strong>Booking</strong> — a through-model implementing the many-to-many relationship between Django's built-in <em>User</em> model and <em>GymClass</em>. Each booking records the user, the class, and the timestamp of the booking.</li>
+  </ul>
+
+  <h3>Application Pages &amp; Requirements</h3>
+  <table class="req-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Requirement</th>
+        <th>Page / Feature</th>
+        <th>Points</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Navigation menu</td><td>Sticky navbar (all pages except login)</td><td>5%</td><td class="check">✓</td></tr>
+      <tr><td>2</td><td>Login page</td><td><code>/login/</code> — form, logo, link to register</td><td>5%</td><td class="check">✓</td></tr>
+      <tr><td>3</td><td>Registration page</td><td><code>/register/</code> — full user creation form</td><td>15%</td><td class="check">✓</td></tr>
+      <tr><td>4</td><td>All items display page</td><td><code>/classes/</code> — filterable table of all classes</td><td>15%</td><td class="check">✓</td></tr>
+      <tr><td>5</td><td>Item detail page</td><td><code>/classes/&lt;id&gt;/</code> — details + book/cancel button</td><td>15%</td><td class="check">✓</td></tr>
+      <tr><td>6</td><td>Item add page</td><td><code>/classes/add/</code> — admin-only add form</td><td>10%</td><td class="check">✓</td></tr>
+      <tr><td>7</td><td>Item update page</td><td><code>/classes/&lt;id&gt;/update/</code> — admin-only edit form</td><td>10%</td><td class="check">✓</td></tr>
+      <tr><td>8</td><td>Bootstrap CSS styling</td><td>Consistent orange &amp; white theme across all pages</td><td>5%</td><td class="check">✓</td></tr>
+      <tr><td>9</td><td>Report + LMS submission</td><td>This document</td><td>20%</td><td class="check">✓</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Access Control</h3>
+  <p>
+    The application enforces two access levels. All pages except <code>/login/</code> and <code>/register/</code> require authentication (<code>@login_required</code>). The Add Class and Update Class pages additionally check <code>user.is_staff</code>, blocking regular members and redirecting them with an informative message.
+  </p>
+
+  <div class="page-footer">
+    <span>FitSync — IS424 Project Report</span>
+    <span>King Saud University · 2026</span>
+    <span>Page 4</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     PAGE 5 — CONCLUSION
+══════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <span class="brand">⚡ FitSync — Project Report</span>
+    <span class="section-num">Section 4 — Conclusion</span>
+  </div>
+
+  <div class="section-tag">4 &nbsp;·&nbsp; Conclusion</div>
+  <h2>Conclusion</h2>
+
+  <p>
+    FitSync successfully delivers a complete, functional web application that addresses the real-world problem of gym class scheduling and booking management. All nine project requirements have been implemented and verified, resulting in a clean, consistent, and role-aware application built on the Django framework.
+  </p>
+
+  <p>
+    The application provides an intuitive user experience: members can register, browse the full class schedule, view detailed session information, and book or cancel classes with a single click. Administrators have the additional ability to create and update classes, with regular members prevented from accessing those pages at both the URL and UI level.
+  </p>
+
+  <h3>Lessons Learned</h3>
+  <ul>
+    <li>
+      <strong>Django's ORM is powerful but requires careful model design.</strong> Defining the many-to-many relationship between users and classes through a custom <em>Booking</em> through-model — rather than Django's default M2M field — gave us the flexibility to store additional metadata (such as the booking timestamp) and enforce uniqueness constraints.
+    </li>
+    <li>
+      <strong>Template inheritance saves significant effort.</strong> Creating a single <code>base.html</code> with a consistent navbar, flash messages, and footer, and extending it in all other pages, ensured a uniform look and eliminated duplicated markup.
+    </li>
+    <li>
+      <strong>Bootstrap 5 accelerates responsive design.</strong> Using Bootstrap's grid system, utility classes, and components allowed us to produce a polished, mobile-friendly layout without writing extensive custom CSS.
+    </li>
+    <li>
+      <strong>Separating concerns improves maintainability.</strong> Keeping business logic in <code>views.py</code>, data definitions in <code>models.py</code>, and presentation in templates made the codebase easy to navigate, debug, and extend.
+    </li>
+  </ul>
+
+  <h3>Difficulties Encountered</h3>
+  <ul>
+    <li>
+      <strong>Datetime field formatting for HTML inputs.</strong> Django stores datetimes in UTC with timezone information, while the HTML <code>datetime-local</code> input expects a specific string format. We resolved this by manually formatting the value in the view with <code>strftime('%Y-%m-%dT%H:%M')</code> before passing it to the update form.
+    </li>
+    <li>
+      <strong>Role-based access without a custom user model.</strong> Instead of building a custom user model, we leveraged Django's built-in <code>is_staff</code> flag to distinguish administrators from regular members, which simplified the implementation while meeting all functional requirements.
+    </li>
+    <li>
+      <strong>Flash message storage.</strong> Django's default session-based message storage required active session middleware. Switching to cookie-based storage resolved compatibility issues encountered during development.
+    </li>
+  </ul>
+
+  <h3>Future Improvements</h3>
+  <p>
+    Given more time, the following features would further enhance the system: email confirmation upon booking, a dedicated admin dashboard with analytics, recurring class schedules, waitlist functionality for full classes, and deployment to a production server such as Railway or PythonAnywhere.
+  </p>
+
+  <div class="highlight-box">
+    <strong>Summary:</strong> FitSync demonstrates that Django's built-in features — combined with Bootstrap's visual utilities — enable the rapid delivery of a secure, well-structured, and user-friendly CRUD web application within the scope of a four-week academic project.
+  </div>
+
+  <div class="page-footer">
+    <span>FitSync — IS424 Project Report</span>
+    <span>King Saud University · 2026</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+</body>
+</html>

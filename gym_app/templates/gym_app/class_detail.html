@@ -1,0 +1,168 @@
+{% extends 'gym_app/base.html' %}
+
+{% block title %}{{ gym_class.name }} — FitSync{% endblock %}
+{% block meta_description %}Book {{ gym_class.name }} with {{ gym_class.instructor }} at FitSync.{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 900px;">
+
+  <!-- Back link -->
+  <div class="mb-3 mt-3">
+    <a href="{% url 'class_list' %}" style="color:var(--fs-muted); font-size:0.875rem; text-decoration:none;">
+      <i class="bi bi-arrow-left me-1"></i>Back to All Classes
+    </a>
+  </div>
+
+  <!-- Hero card -->
+  <div class="fs-card p-0 overflow-hidden mb-4 fade-in-up" id="class-detail-card">
+
+    <!-- Header band -->
+    <div style="background: #fff7ed;
+                border-bottom: 1px solid var(--fs-border); padding: 2rem 2rem 1.5rem;">
+      <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+        <div>
+          <div class="d-flex flex-wrap gap-2 mb-2">
+            <span class="badge-cat cat-{{ gym_class.category }}">{{ gym_class.get_category_display }}</span>
+            <span class="badge-cat diff-{{ gym_class.difficulty }}">{{ gym_class.get_difficulty_display }}</span>
+          </div>
+          <h1 style="font-weight:800; font-size:2rem; margin-bottom:0.25rem;">{{ gym_class.name }}</h1>
+          <p style="color:var(--fs-muted); font-size:0.95rem; margin:0;">
+            <i class="bi bi-person me-1"></i>{{ gym_class.instructor }}
+            &nbsp;&bull;&nbsp;
+            <i class="bi bi-geo-alt me-1"></i>{{ gym_class.location }}
+          </p>
+        </div>
+
+        <!-- Update link (Requirement #5 → link to #7) — staff only -->
+        {% if user.is_staff %}
+        <a href="{% url 'class_update' gym_class.pk %}" class="btn btn-fs-outline px-4"
+           id="btn-update-class" style="align-self:flex-start;">
+          <i class="bi bi-pencil me-2"></i>Edit Class
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="p-4">
+      <div class="row g-4">
+
+        <!-- Left: details -->
+        <div class="col-md-7">
+          <h5 style="font-weight:700; margin-bottom:1rem;">About this class</h5>
+          <p style="color:var(--fs-muted); line-height:1.75; font-size:0.95rem;">{{ gym_class.description }}</p>
+
+          <hr class="divider" />
+
+          <!-- Stats grid -->
+          <div class="row g-3 text-center">
+            <div class="col-4">
+              <div class="stat-box">
+                <div class="stat-value" style="font-size:1.4rem; color:var(--fs-primary);">
+                  {{ gym_class.duration }}
+                </div>
+                <div class="stat-label">Minutes</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="stat-box">
+                <div class="stat-value" style="font-size:1.4rem; color:var(--fs-primary);">
+                  {{ gym_class.capacity }}
+                </div>
+                <div class="stat-label">Capacity</div>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="stat-box">
+                <div class="stat-value" style="font-size:1.4rem;
+                  {% if gym_class.is_full %}color:#dc2626;{% else %}color:var(--fs-success);{% endif %}">
+                  {{ gym_class.spots_remaining }}
+                </div>
+                <div class="stat-label">Spots Left</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: booking panel -->
+        <div class="col-md-5">
+          <div style="background: #fff7ed; border: 1px solid #fed7aa;
+                      border-radius: 16px; padding: 1.5rem;" id="booking-panel">
+
+            <!-- Schedule -->
+            <div class="mb-4">
+              <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em;
+                          color:var(--fs-muted); margin-bottom:8px;">Schedule</div>
+              <div style="font-size:1.3rem; font-weight:700;">
+                {{ gym_class.schedule|date:"l, d F Y" }}
+              </div>
+              <div style="font-size:1rem; color:var(--fs-muted);">
+                <i class="bi bi-clock me-1"></i>{{ gym_class.schedule|date:"H:i" }}
+              </div>
+            </div>
+
+            <!-- Capacity bar -->
+            <div class="mb-4 capacity-bar">
+              <div class="d-flex justify-content-between mb-1" style="font-size:0.8rem; color:var(--fs-muted);">
+                <span>{{ gym_class.booking_count }} / {{ gym_class.capacity }} booked</span>
+                <span>{{ gym_class.spots_remaining }} remaining</span>
+              </div>
+              <div class="progress" style="height:8px;">
+                <div class="progress-bar"
+                     style="width: {% widthratio gym_class.booking_count gym_class.capacity 100 %}%;
+                            {% if gym_class.is_full %}background:#fca5a5;{% endif %}">
+                </div>
+              </div>
+            </div>
+
+            <!-- Book / Cancel form (Requirement #5) -->
+            <form method="post" action="{% url 'class_detail' gym_class.pk %}" id="booking-form">
+              {% csrf_token %}
+              {% if is_booked %}
+                <input type="hidden" name="action" value="cancel" />
+                <button type="submit" class="btn btn-fs-cancel w-100 py-3" id="btn-cancel-booking">
+                  <i class="bi bi-calendar-x me-2"></i>Cancel Booking
+                </button>
+                <p class="text-center mt-2" style="font-size:0.78rem; color:var(--fs-success);">
+                  <i class="bi bi-check-circle-fill me-1"></i>You are booked for this class
+                </p>
+              {% elif gym_class.is_full %}
+                <button type="button" class="btn w-100 py-3" id="btn-class-full"
+                        style="background:#f3f4f6; border:1px solid #e5e7eb;
+                               color:#9ca3af; border-radius:12px;" disabled>
+                  <i class="bi bi-slash-circle me-2"></i>Class is Full
+                </button>
+              {% else %}
+                <input type="hidden" name="action" value="book" />
+                <button type="submit" class="btn btn-fs-primary w-100 py-3 btn-pulse" id="btn-book-class">
+                  <i class="bi bi-lightning-charge-fill me-2"></i>Book This Class
+                </button>
+              {% endif %}
+            </form>
+
+          </div>
+
+          <!-- Booked members -->
+          {% if booked_members %}
+          <div class="mt-3" style="background:#f9fafb; border:1px solid var(--fs-border);
+                                   border-radius:12px; padding:1rem;" id="booked-members-panel">
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em;
+                        color:var(--fs-muted); margin-bottom:10px;">Booked Members ({{ booked_members|length }})</div>
+            {% for booking in booked_members %}
+            <div class="d-flex align-items-center gap-2 mb-2" id="member-{{ forloop.counter }}">
+              <div class="fs-avatar" style="width:28px; height:28px; font-size:0.7rem;">
+                {{ booking.user.first_name|first|upper }}{{ booking.user.last_name|first|upper }}
+              </div>
+              <span style="font-size:0.85rem;">{{ booking.user.get_full_name|default:booking.user.username }}</span>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends 'gym_app/base.html' %}
+
+{% block title %}All Classes — FitSync{% endblock %}
+{% block meta_description %}Browse all available gym classes at FitSync. Filter by category and difficulty.{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="fs-page-header">
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+      <div>
+        <h1 class="fade-in-up"><i class="bi bi-grid-3x3-gap me-2 text-fire"></i>All Classes</h1>
+        <p class="fade-in-up">Browse and book your next session</p>
+      </div>
+      {% if user.is_staff %}
+      <a href="{% url 'class_add' %}" class="btn btn-fs-primary px-4 py-2 fade-in-up" id="btn-add-class-top">
+        <i class="bi bi-plus-lg me-2"></i>Add New Class
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Filter Bar -->
+  <form method="get" action="{% url 'class_list' %}" id="filter-form" class="mb-4">
+    <div class="fs-card p-3 d-flex flex-wrap gap-3 align-items-end">
+      <div>
+        <label class="form-label">Category</label>
+        <select name="category" class="form-select" style="min-width:160px;" id="filter-category">
+          <option value="">All Categories</option>
+          {% for val, label in categories %}
+            <option value="{{ val }}" {% if category_filter == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Difficulty</label>
+        <select name="difficulty" class="form-select" style="min-width:160px;" id="filter-difficulty">
+          <option value="">All Levels</option>
+          {% for val, label in difficulties %}
+            <option value="{{ val }}" {% if difficulty_filter == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-fs-primary px-4" id="btn-filter-apply">
+          <i class="bi bi-funnel me-1"></i>Filter
+        </button>
+        <a href="{% url 'class_list' %}" class="btn btn-fs-outline px-3" id="btn-filter-clear">
+          <i class="bi bi-x-lg"></i>
+        </a>
+      </div>
+    </div>
+  </form>
+
+  <!-- Summary -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <span style="color:var(--fs-muted); font-size:0.875rem;">
+      Showing <strong style="color:var(--fs-text);">{{ classes|length }}</strong> class{{ classes|length|pluralize:"es" }}
+      {% if category_filter or difficulty_filter %} — filtered{% endif %}
+    </span>
+  </div>
+
+  <!-- Classes Table -->
+  {% if classes %}
+  <div class="fs-card overflow-hidden fade-in-up" id="classes-table-wrapper">
+    <table class="fs-table" id="classes-table">
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Category</th>
+          <th>Instructor</th>
+          <th>Schedule</th>
+          <th>Duration</th>
+          <th>Spots</th>
+          <th>Difficulty</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for class in classes %}
+        <tr id="class-row-{{ class.pk }}">
+          <td>
+            <div style="font-weight:600;">{{ class.name }}</div>
+            <div style="font-size:0.78rem; color:var(--fs-muted);">{{ class.location }}</div>
+          </td>
+          <td>
+            <span class="badge-cat cat-{{ class.category }}">{{ class.get_category_display }}</span>
+          </td>
+          <td style="color:var(--fs-muted);">
+            <i class="bi bi-person me-1"></i>{{ class.instructor }}
+          </td>
+          <td style="font-size:0.85rem;">
+            <div>{{ class.schedule|date:"D, d M Y" }}</div>
+            <div style="color:var(--fs-muted);">{{ class.schedule|date:"H:i" }}</div>
+          </td>
+          <td style="color:var(--fs-muted); font-size:0.85rem;">
+            <i class="bi bi-clock me-1"></i>{{ class.duration }} min
+          </td>
+          <td>
+            <div class="capacity-bar" style="min-width:80px;">
+              <div style="font-size:0.8rem; margin-bottom:4px;">
+                {% if class.is_full %}
+                  <span style="color:#fca5a5;">Full</span>
+                {% else %}
+                  <span>{{ class.spots_remaining }} left</span>
+                {% endif %}
+              </div>
+              <div class="progress">
+                <div class="progress-bar"
+                     style="width:{% widthratio class.booking_count class.capacity 100 %}%">
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <span class="badge-cat diff-{{ class.difficulty }}">{{ class.get_difficulty_display }}</span>
+          </td>
+          <td>
+            {% if class.pk in user_booked_ids %}
+              <span style="color:var(--fs-success); font-size:0.8rem; font-weight:600;">
+                <i class="bi bi-check-circle-fill"></i> Booked
+              </span>
+            {% elif class.is_full %}
+              <span style="color:var(--fs-muted); font-size:0.8rem;">
+                <i class="bi bi-x-circle"></i> Full
+              </span>
+            {% else %}
+              <span style="color:var(--fs-muted); font-size:0.8rem;">Available</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'class_detail' class.pk %}" class="btn btn-fs-outline btn-sm px-3"
+               id="btn-view-class-{{ class.pk }}">
+              View <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% else %}
+  <!-- Empty state -->
+  <div class="text-center py-5 fs-card fade-in-up" id="no-classes-empty-state">
+    <i class="bi bi-calendar-x" style="font-size:3rem; color:var(--fs-muted);"></i>
+    <h4 class="mt-3" style="color:var(--fs-muted);">No classes found</h4>
+    <p style="color:var(--fs-muted); font-size:0.875rem;">
+      {% if category_filter or difficulty_filter %}
+        Try removing filters, or <a href="{% url 'class_list' %}" style="color:var(--fs-primary);">view all classes</a>.
+      {% else %}
+        Get started by <a href="{% url 'class_add' %}" style="color:var(--fs-primary);">adding the first class</a>.
+      {% endif %}
+    </p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

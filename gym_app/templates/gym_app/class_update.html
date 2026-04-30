@@ -1,0 +1,109 @@
+{% extends 'gym_app/base.html' %}
+
+{% block title %}Update {{ gym_class.name }} — FitSync{% endblock %}
+{% block meta_description %}Update the details of {{ gym_class.name }} on FitSync.{% endblock %}
+
+{% block content %}
+<div class="fs-page-header">
+  <div class="container" style="max-width:720px;">
+    <a href="{% url 'class_detail' gym_class.pk %}" style="color:var(--fs-muted); font-size:0.875rem; text-decoration:none;">
+      <i class="bi bi-arrow-left me-1"></i>Back to Class
+    </a>
+    <h1 class="mt-2"><i class="bi bi-pencil-square me-2 text-fire"></i>Update Class</h1>
+    <p>Editing: <strong>{{ gym_class.name }}</strong></p>
+  </div>
+</div>
+
+<div class="container fade-in-up" style="max-width:720px;">
+  <div class="fs-card p-4" id="update-class-card">
+    <form method="post" action="{% url 'class_update' gym_class.pk %}" id="update-class-form">
+      {% csrf_token %}
+
+      <!-- Section: Basic Info -->
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <span style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--fs-muted); white-space:nowrap;">Basic Information</span>
+        <div style="flex:1; height:1px; background:var(--fs-border);"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="class-name">Class Name</label>
+        {{ form.name }}
+        {% if form.name.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.name.errors }}</div>{% endif %}
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label" for="class-category">Category</label>
+          {{ form.category }}
+          {% if form.category.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.category.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="class-difficulty">Difficulty Level</label>
+          {{ form.difficulty }}
+          {% if form.difficulty.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.difficulty.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label" for="class-description">Description</label>
+        {{ form.description }}
+        {% if form.description.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.description.errors }}</div>{% endif %}
+      </div>
+
+      <!-- Section: Instructor & Location -->
+      <div class="d-flex align-items-center gap-3 mt-4 mb-4">
+        <span style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--fs-muted); white-space:nowrap;">Instructor & Location</span>
+        <div style="flex:1; height:1px; background:var(--fs-border);"></div>
+      </div>
+
+      <div class="row g-3 mb-3">
+        <div class="col-md-6">
+          <label class="form-label" for="class-instructor">Instructor Name</label>
+          {{ form.instructor }}
+          {% if form.instructor.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.instructor.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="class-location">Location / Studio</label>
+          {{ form.location }}
+          {% if form.location.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.location.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <!-- Section: Schedule -->
+      <div class="d-flex align-items-center gap-3 mt-4 mb-4">
+        <span style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--fs-muted); white-space:nowrap;">Schedule & Capacity</span>
+        <div style="flex:1; height:1px; background:var(--fs-border);"></div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-md-5">
+          <label class="form-label" for="class-schedule">Date & Time</label>
+          {{ form.schedule }}
+          {% if form.schedule.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.schedule.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="class-duration">Duration (min)</label>
+          {{ form.duration }}
+          {% if form.duration.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.duration.errors }}</div>{% endif %}
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="class-capacity">Max Participants</label>
+          {{ form.capacity }}
+          {% if form.capacity.errors %}<div style="color:#fca5a5; font-size:0.8rem; margin-top:4px;">{{ form.capacity.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="d-flex gap-3 justify-content-end">
+        <a href="{% url 'class_detail' gym_class.pk %}" class="btn btn-fs-outline px-4" id="btn-update-cancel">
+          Cancel
+        </a>
+        <button type="submit" class="btn btn-fs-primary px-5" id="btn-update-submit">
+          <i class="bi bi-check-lg me-2"></i>Save Changes
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
+{% endblock %}

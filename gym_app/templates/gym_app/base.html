@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}FitSync — Gym Class Booking{% endblock %}</title>
+  <meta name="description"
+    content="{% block meta_description %}FitSync is your premium gym class booking platform. Browse, book and manage your fitness sessions.{% endblock %}" />
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       FitSync Design System — Orange & White Theme
+    ============================================================ */
+    :root {
+      --fs-bg: #f5f5f5;
+      --fs-surface: #ffffff;
+      --fs-card: #ffffff;
+      --fs-card-hover: #fff7ed;
+      --fs-border: #e5e7eb;
+      --fs-primary: #f97316;
+      --fs-primary-d: #ea580c;
+      --fs-success: #16a34a;
+      --fs-danger: #dc2626;
+      --fs-text: #111827;
+      --fs-muted: #6b7280;
+      --fs-radius: 12px;
+      --fs-radius-lg: 20px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --shadow-orange: 0 4px 16px rgba(249, 115, 22, 0.25);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--fs-bg);
+      color: var(--fs-text);
+      min-height: 100vh;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--fs-primary);
+      border-radius: 3px;
+    }
+
+    /* ── Navbar ── */
+    .fs-navbar {
+      background: #ffffff;
+      border-bottom: 2px solid var(--fs-primary);
+      padding: 0.75rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 1050;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fs-navbar .navbar-brand {
+      font-weight: 900;
+      font-size: 1.6rem;
+      letter-spacing: -0.5px;
+      color: var(--fs-primary) !important;
+      text-decoration: none;
+    }
+
+    .fs-navbar .nav-link {
+      color: var(--fs-muted) !important;
+      font-weight: 500;
+      font-size: 0.9rem;
+      padding: 0.5rem 1rem !important;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .fs-navbar .nav-link:hover,
+    .fs-navbar .nav-link.active {
+      color: var(--fs-primary) !important;
+      background: #fff7ed;
+    }
+
+    .fs-navbar .nav-link i {
+      margin-right: 6px;
+    }
+
+    .fs-btn-fire {
+      background: var(--fs-primary);
+      border: none;
+      color: #fff !important;
+      font-weight: 600;
+      padding: 0.45rem 1.2rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-size: 0.875rem;
+    }
+
+    .fs-btn-fire:hover {
+      background: var(--fs-primary-d);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-orange);
+    }
+
+    /* ── Main wrapper ── */
+    .fs-main {
+      padding: 2rem 0 4rem;
+    }
+
+    /* ── Cards ── */
+    .fs-card {
+      background: var(--fs-card);
+      border: 1px solid var(--fs-border);
+      border-radius: var(--fs-radius);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .fs-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--fs-primary);
+    }
+
+    /* ── Category & difficulty badges ── */
+    .badge-cat {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .cat-yoga {
+      background: #ede9fe;
+      color: #7c3aed;
+    }
+
+    .cat-cardio {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .cat-strength {
+      background: #ffedd5;
+      color: #ea580c;
+    }
+
+    .cat-pilates {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .cat-hiit {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .cat-cycling {
+      background: #cffafe;
+      color: #0e7490;
+    }
+
+    .cat-swimming {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .cat-boxing {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    .diff-beginner {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .diff-intermediate {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    .diff-advanced {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* ── Progress bar ── */
+    .capacity-bar .progress {
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 4px;
+    }
+
+    .capacity-bar .progress-bar {
+      background: var(--fs-primary);
+      border-radius: 4px;
+    }
+
+    /* ── Buttons ── */
+    .btn-fs-primary {
+      background: var(--fs-primary);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: var(--fs-radius);
+      transition: all 0.2s ease;
+    }
+
+    .btn-fs-primary:hover {
+      color: #fff;
+      background: var(--fs-primary-d);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-orange);
+    }
+
+    .btn-fs-outline {
+      background: transparent;
+      border: 1.5px solid var(--fs-border);
+      color: var(--fs-text);
+      font-weight: 500;
+      border-radius: var(--fs-radius);
+      transition: all 0.2s ease;
+    }
+
+    .btn-fs-outline:hover {
+      border-color: var(--fs-primary);
+      color: var(--fs-primary);
+      background: #fff7ed;
+    }
+
+    .btn-fs-cancel {
+      background: #f3f4f6;
+      border: 1.5px solid #e5e7eb;
+      color: var(--fs-muted);
+      font-weight: 500;
+      border-radius: var(--fs-radius);
+      transition: all 0.2s ease;
+    }
+
+    .btn-fs-cancel:hover {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #dc2626;
+    }
+
+    /* ── Form controls ── */
+    .form-control,
+    .form-select {
+      background: #ffffff !important;
+      border: 1.5px solid var(--fs-border) !important;
+      color: var(--fs-text) !important;
+      border-radius: 10px !important;
+      padding: 0.65rem 1rem !important;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-control::placeholder {
+      color: var(--fs-muted) !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--fs-primary) !important;
+      box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15) !important;
+      outline: none;
+    }
+
+    .form-select option {
+      background: #ffffff;
+      color: var(--fs-text);
+    }
+
+    label.form-label {
+      font-weight: 500;
+      font-size: 0.875rem;
+      color: var(--fs-muted);
+      margin-bottom: 6px;
+    }
+
+    /* ── Alerts ── */
+    .alert {
+      border-radius: var(--fs-radius) !important;
+      border: 1px solid transparent;
+      font-size: 0.9rem;
+    }
+
+    .alert-success {
+      background: #f0fdf4 !important;
+      border-color: #bbf7d0 !important;
+      color: #15803d !important;
+    }
+
+    .alert-danger {
+      background: #fef2f2 !important;
+      border-color: #fecaca !important;
+      color: #b91c1c !important;
+    }
+
+    .alert-info {
+      background: #fff7ed !important;
+      border-color: #fed7aa !important;
+      color: #c2410c !important;
+    }
+
+    .alert-warning {
+      background: #fffbeb !important;
+      border-color: #fde68a !important;
+      color: #92400e !important;
+    }
+
+    /* ── Page header ── */
+    .fs-page-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--fs-border);
+      padding: 2.5rem 0 2rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .fs-page-header h1 {
+      font-weight: 800;
+      font-size: 2rem;
+      margin-bottom: 0.25rem;
+      color: var(--fs-text);
+    }
+
+    .fs-page-header p {
+      color: var(--fs-muted);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    /* ── Table ── */
+    .fs-table {
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    .fs-table thead th {
+      background: #f9fafb;
+      color: var(--fs-muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--fs-border);
+    }
+
+    .fs-table thead th:first-child {
+      border-radius: var(--fs-radius) 0 0 0;
+    }
+
+    .fs-table thead th:last-child {
+      border-radius: 0 var(--fs-radius) 0 0;
+    }
+
+    .fs-table tbody tr {
+      background: #ffffff;
+      transition: background 0.15s;
+    }
+
+    .fs-table tbody tr:hover {
+      background: #fff7ed;
+    }
+
+    .fs-table tbody td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--fs-border);
+      vertical-align: middle;
+      font-size: 0.9rem;
+      color: var(--fs-text);
+    }
+
+    .fs-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .fs-table a {
+      color: var(--fs-text);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .fs-table a:hover {
+      color: var(--fs-primary);
+    }
+
+    /* ── Stat boxes ── */
+    .stat-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: var(--fs-radius);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+    }
+
+    .stat-box .stat-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--fs-primary);
+    }
+
+    .stat-box .stat-label {
+      font-size: 0.8rem;
+      color: var(--fs-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Misc ── */
+    .text-muted-fs {
+      color: var(--fs-muted) !important;
+    }
+
+    .text-fire {
+      color: var(--fs-primary) !important;
+    }
+
+    .divider {
+      border-color: var(--fs-border);
+      margin: 1.5rem 0;
+    }
+
+    .fs-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--fs-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in-up {
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    @keyframes pulse-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 0 8px rgba(249, 115, 22, 0);
+      }
+    }
+
+    .btn-pulse {
+      animation: pulse-glow 2s infinite;
+    }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════
+     NAVBAR  (Requirement #1 — common to all pages except login)
+══════════════════════════════════════════════════════════ -->
+  <nav class="fs-navbar navbar navbar-expand-lg" id="main-navbar">
+    <div class="container">
+
+      <!-- Brand -->
+      <a class="navbar-brand" href="{% url 'class_list' %}" id="nav-brand">
+        <i class="bi bi-lightning-charge-fill"></i> FitSync
+      </a>
+
+      <!-- Mobile toggle -->
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation" id="nav-toggler"
+        style="color: var(--fs-primary);">
+        <i class="bi bi-list fs-4"></i>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto ms-3 gap-1">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'class_list' %}active{% endif %}"
+              href="{% url 'class_list' %}" id="nav-classes">
+              <i class="bi bi-grid-3x3-gap"></i>All Classes
+            </a>
+          </li>
+          {% if user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'class_add' %}active{% endif %}"
+              href="{% url 'class_add' %}" id="nav-add-class">
+              <i class="bi bi-plus-circle"></i>Add Class
+            </a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'my_bookings' %}active{% endif %}"
+              href="{% url 'my_bookings' %}" id="nav-my-bookings">
+              <i class="bi bi-calendar-check"></i>My Bookings
+            </a>
+          </li>
+        </ul>
+
+        <!-- User area -->
+        <div class="d-flex align-items-center gap-3">
+          {% if user.is_authenticated %}
+          <div class="d-flex align-items-center gap-2" id="nav-user-info">
+            <div class="fs-avatar">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</div>
+            <div class="d-none d-lg-block">
+              <div style="font-size:0.85rem; font-weight:600; line-height:1.2; color:var(--fs-text);">
+                {{ user.get_full_name|default:user.username }}
+              </div>
+              <div style="font-size:0.72rem; color:var(--fs-muted);">Member</div>
+            </div>
+          </div>
+          <a href="{% url 'logout' %}" class="fs-btn-fire btn btn-sm" id="nav-logout">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+
+
+  <!-- ══════════════════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════════════════ -->
+  <main class="fs-main" id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.querySelectorAll('.alert').forEach(function (alert) {
+      setTimeout(function () {
+        var bsAlert = new bootstrap.Alert(alert);
+        if (alert.parentNode) bsAlert.close();
+      }, 5000);
+    });
+  </script>
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+
+</html>
