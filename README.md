@@ -11,7 +11,6 @@ A Django-based CRUD web application for managing and booking gym classes. Built 
 - View class details and book/cancel a spot
 - Personal bookings dashboard
 - Admin-only: add and update classes
-- Responsive orange & white UI built with Bootstrap 5
 
 ## Tech Stack
 
