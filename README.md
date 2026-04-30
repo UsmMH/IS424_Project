@@ -1,4 +1,4 @@
-# FitSync — Gym Class Booking System
+# FitLed — Gym Class Booking System
 
 A Django-based CRUD web application for managing and booking gym classes. Built as part of the IS424 Web Application Development course at King Saud University.
 

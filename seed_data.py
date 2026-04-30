@@ -26,7 +26,7 @@ def make_user(username, first, last, email, password, is_admin=False):
     print(f'  Created user: {username}')
     return u
 
-admin   = make_user('admin',  'Abdullah', 'Al-Rashid', 'admin@fitsync.com',  'admin123', is_admin=True)
+admin   = make_user('admin',  'Abdullah', 'Al-Rashid', 'admin@FitLed.com',  'admin123', is_admin=True)
 member1 = make_user('khalid', 'Khalid',   'Al-Omar',   'khalid@example.com', 'pass1234')
 member2 = make_user('faisal', 'Faisal',   'Al-Harbi',  'faisal@example.com', 'pass1234')
 
